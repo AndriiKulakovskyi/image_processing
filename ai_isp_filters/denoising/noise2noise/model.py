@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Apr 10 14:52:59 2021
+Created on Sat Apr 10 14:56:44 2021
 
 @author: Andrii
 """
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
