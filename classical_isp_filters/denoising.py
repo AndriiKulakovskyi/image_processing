@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Feb 14 17:21:47 2021
-
-@author: Andrii
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -13,8 +6,9 @@ def gaussian_dn(im, sigma):
     n = np.int(np.sqrt(sigma) * 3)
     height, width = im.shape
     img_filtered = np.zeros([height, width])
-      # Iterate over pixel locations p
+    
     print('Gaussian support:', n)
+    
     for p_y in range(0, height):
         for p_x in range(0, width):
             gp = 0
@@ -42,9 +36,11 @@ def gaussian_dn(im, sigma):
                  
 def bilateral_dn(im, sigma_s, sigma_i):
     n = np.int(np.sqrt(sigma_s) * 3)
+    
     height, width = im.shape
     img_filtered = np.zeros([height, width])
-      # Iterate over pixel locations p
+    
+    # Iterate over pixel locations p
     print('Gaussian support:', n)
     for p_y in range(0, height):
         for p_x in range(0, width):
@@ -74,38 +70,45 @@ def bilateral_dn(im, sigma_s, sigma_i):
     return img_filtered   
                     
 
+if __name__ == '__main__':
+    # Generate image
+    image = np.empty([21,21])
+    image[:10,:] = 0.2
+    image[10:,:] = 0.8
     
-image = np.empty([21,21])
-image[:10,:] = 0.2
-image[10:,:] = 0.8
-noise = np.random.uniform(0.0, 0.1, [21,21])
-image_noisy = image + noise
-image_noisy = image_noisy.clip(0, 1)
-
-# Gaussin denoiser
-imgGaussian = gaussian_dn(image_noisy, sigma=2)
-imgBilat = bilateral_dn(image_noisy, sigma_s=2, sigma_i=0.1)
-
-
-
-x = np.linspace(0, 21, 21)
-y = np.linspace(0, 21, 21)
-xv, yv = np.meshgrid(x, y)
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-dem3d=ax.plot_surface(xv,yv,image_noisy, cmap='viridis')
-plt.show()
-
-
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-dem3d=ax.plot_surface(xv,yv, imgGaussian, cmap='viridis')
-plt.show()
-
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-dem3d=ax.plot_surface(xv,yv, imgBilat, cmap='viridis')
-plt.show()
+    # Add noise 
+    noise = np.random.uniform(0.0, 0.1, [21,21])
+    image_noisy = image + noise
+    image_noisy = image_noisy.clip(0, 1)
+    
+    # Apply Gaussian denoiser
+    imgGaussian = gaussian_dn(image_noisy, sigma=2)
+    
+    # Apply Bilateral denoiser
+    imgBilateral = bilateral_dn(image_noisy, sigma_s=2, sigma_i=0.1)
+    
+    # Visualize
+    x = np.linspace(0, 21, 21)
+    y = np.linspace(0, 21, 21)
+    xv, yv = np.meshgrid(x, y)
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    dem3d = ax.plot_surface(xv, yv, image_noisy, cmap='viridis')
+    ax.set_title('Noisy image')
+    plt.show()
+    
+    
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    dem3d = ax.plot_surface(xv, yv, imgGaussian, cmap='viridis')
+    ax.set_title('Gaussian DN')
+    plt.show()
+    
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    dem3d = ax.plot_surface(xv,yv, imgBilateral, cmap='viridis')
+    ax.set_title('Bilateral DN')
+    plt.show()
